@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -84,7 +86,7 @@ fn test_vector() {
         username: "Suharjin".to_string(),
         email: "suharjin01@gmail.com".to_string(),
         hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
-        
+
         // vector with option
         //phone: None
         phone: Some("083138198579".to_string())
@@ -95,5 +97,20 @@ fn test_vector() {
 
     // konversi balik ke data vector
     let result: User = serde_json::from_str(&json).unwrap();
+    println!("{:?}", result)
+}
+
+// Map
+#[test]
+fn test_map() {
+    let mut values: HashMap<String, i32> = HashMap::new();
+    values.insert("one".to_string(), 1);
+    values.insert("two".to_string(), 2);
+    values.insert("three".to_string(), 3);
+
+    let json = serde_json::to_string(&values).unwrap();
+    println!("{}", json);
+
+    let result: HashMap<String, i32> = serde_json::from_str(&json).unwrap();
     println!("{:?}", result)
 }
