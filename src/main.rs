@@ -28,6 +28,7 @@ struct User {
     username: String,
     email: String,
     hobbies: Vec<String>,
+    phone: Option<String>,
 }
 
 
@@ -83,6 +84,10 @@ fn test_vector() {
         username: "Suharjin".to_string(),
         email: "suharjin01@gmail.com".to_string(),
         hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
+        
+        // vector with option
+        //phone: None
+        phone: Some("083138198579".to_string())
     };
 
     let json = serde_json::to_string(&request).unwrap();
