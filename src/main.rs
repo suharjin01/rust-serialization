@@ -22,6 +22,14 @@ struct CreateUserRequest {
     address: AddressRequest,
 }
 
+// Struct untuk materi array dan vector
+#[derive(Debug, Serialize, Deserialize)]
+struct User {
+    username: String,
+    email: String,
+    hobbies: Vec<String>,
+}
+
 
 #[test]
 fn test_create_json_for_user_login_request() {
@@ -56,5 +64,31 @@ fn test_create_json_for_user_create_user_request() {
     println!("{}", json);
 
     let result: CreateUserRequest = serde_json::from_str(&json).unwrap();
+    println!("{:?}", result)
+}
+
+// Array
+#[test]
+fn test_create_json_from_array() {
+    let numbers = [10, 20, 15, 25, 30];
+    let json = serde_json::to_string(&numbers).unwrap();
+
+    println!("{}", json)
+}
+
+// Vector
+#[test]
+fn test_vector() {
+    let request = User {
+        username: "Suharjin".to_string(),
+        email: "suharjin01@gmail.com".to_string(),
+        hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
+    };
+
+    let json = serde_json::to_string(&request).unwrap();
+    println!("{}", json);
+
+    // konversi balik ke data vector
+    let result: User = serde_json::from_str(&json).unwrap();
     println!("{:?}", result)
 }
