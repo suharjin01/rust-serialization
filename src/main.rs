@@ -40,12 +40,26 @@ struct User {
     hobbies: Vec<String>,
     phone: Option<String>,
     gender: Gender, // menambahkan gender dari enum Gender
+    payment: Payment, // menambahkan payment dari nemum Payment
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 enum Gender {
     Male,
     Female
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(tag = "type")]
+enum Payment {
+    CreditCard {
+        card_number: String,
+        expiration: String,
+    },
+    BankAccount {
+        accaunt_number: String,
+        bank_name: String,
+    }
 }
 
 
@@ -106,7 +120,12 @@ fn test_vector() {
         // vector with option
         //phone: None,
         phone: Some("083138198579".to_string()),
-        gender: Gender::Female // tambah enum di fn test vector
+        gender: Gender::Female, // tambah enum di fn test vector
+
+        payment: Payment::BankAccount { // tambah enum Payment di fn test_vector
+            accaunt_number: "1234474374".to_string(), 
+            bank_name: "Bank Muamalat".to_string() 
+        }
     };
 
     let json = serde_json::to_string(&request).unwrap();
@@ -142,7 +161,12 @@ fn test_enum() {
         email: "suharjin01@gmail.com".to_string(),
         hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
         phone: None,
-        gender: Gender::Male
+        gender: Gender::Male,
+
+        payment: Payment::CreditCard { 
+            card_number: "093434374".to_string(), 
+            expiration: "01-07-29".to_string() 
+        }
     };
 
     let json = serde_json::to_string(&request).unwrap();
