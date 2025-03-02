@@ -1,7 +1,7 @@
+use chrono::{DateTime, NaiveDateTime, Utc};
+use serde::de::{Error, Visitor};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::HashMap;
-
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct UserLoginRequest {
@@ -77,7 +77,7 @@ struct Category {
 
 
 // Custom Serialize
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Admin {
     id: String,
     name: Name,
@@ -89,6 +89,35 @@ struct Name {
     last: String,
 }
 
+
+// Custom Deserialization
+struct NameVisitor;
+
+impl<'de> Visitor<'de> for NameVisitor {
+    type Value = Name;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("Expecting name as string")
+    }
+
+    fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+    where
+        E: serde::de::Error, 
+    {
+        let result: Vec<&str> = value.split(" ").collect();
+        if result.len() != 2 {
+            //return Err(Error::custom("Expecting first and last name"));
+            return Err(Error::custom("Expecting first and last name"));
+        }
+
+        Ok(Name { 
+            first: result[0].to_string(), 
+            last: result[1].to_string(), 
+        })
+    }
+}
+
+
 impl Serialize for Name {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -97,6 +126,16 @@ impl Serialize for Name {
         serializer.serialize_str(format!("{} {}", self.first, self.last).as_str())
     }
 }
+
+impl<'de> Deserialize<'de> for Name {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de> {
+        
+        deserializer.deserialize_string(NameVisitor)
+    }
+}
+
 
 #[test]
 fn test_costum_serialize() {
@@ -109,7 +148,10 @@ fn test_costum_serialize() {
     };
 
     let json = serde_json::to_string(&admin).unwrap();
-    println!("{}", json)
+    println!("{}", json);
+
+    let result: Admin = serde_json::from_str(&json).unwrap();
+    println!("{:?}", result)
 }
 
 
