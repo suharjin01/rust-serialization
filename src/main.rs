@@ -21,12 +21,20 @@ struct CreateUserRequest {
     username: String,
     password: String,
     email: String,
+    #[serde(rename = "alamat")] // menambahkan field attribute
     address: AddressRequest,
 }
 
 // Struct untuk materi array dan vector
 #[derive(Debug, Serialize, Deserialize)]
+
+// menambahkan container attribute
+#[serde(rename_all(
+    serialize = "SCREAMING_SNAKE_CASE", 
+    deserialize = "SCREAMING_SNAKE_CASE"
+))]
 struct User {
+    first_name: String,
     username: String,
     email: String,
     hobbies: Vec<String>,
@@ -83,7 +91,8 @@ fn test_create_json_from_array() {
 #[test]
 fn test_vector() {
     let request = User {
-        username: "Suharjin".to_string(),
+        first_name: "Suharjin".to_string(),
+        username: "suharjin".to_string(),
         email: "suharjin01@gmail.com".to_string(),
         hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
 
