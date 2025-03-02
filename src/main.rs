@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -60,6 +61,18 @@ enum Payment {
         accaunt_number: String,
         bank_name: String,
     }
+}
+
+
+// Chrono
+#[derive(Debug, Serialize, Deserialize)]
+struct Category {
+    id: String,
+    name: String,
+    #[serde(with = "chrono::serde::ts_milliseconds")]
+    created_ad: DateTime<Utc>,
+    #[serde(with = "chrono::serde::ts_milliseconds")]
+    updated_ad: DateTime<Utc>,
 }
 
 
@@ -174,5 +187,24 @@ fn test_enum() {
 
     // konversi balik ke data vector
     let result: User = serde_json::from_str(&json).unwrap();
+    println!("{:?}", result)
+}
+
+
+// Chrono
+#[test]
+fn test_chrono() {
+    let category = Category {
+        id: "12345".to_string(),
+        name: "Gadget".to_string(),
+        created_ad: Utc::now(),
+        updated_ad: Utc::now()
+    };
+
+    let json = serde_json::to_string(&category).unwrap();
+    println!("{}", json);
+
+    // konversi balik ke data vector
+    let result: Category = serde_json::from_str(&json).unwrap();
     println!("{:?}", result)
 }
