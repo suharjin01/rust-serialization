@@ -39,6 +39,13 @@ struct User {
     email: String,
     hobbies: Vec<String>,
     phone: Option<String>,
+    gender: Gender, // menambahkan gender dari enum Gender
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+enum Gender {
+    Male,
+    Female
 }
 
 
@@ -97,8 +104,9 @@ fn test_vector() {
         hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
 
         // vector with option
-        //phone: None
-        phone: Some("083138198579".to_string())
+        //phone: None,
+        phone: Some("083138198579".to_string()),
+        gender: Gender::Female // tambah enum di fn test vector
     };
 
     let json = serde_json::to_string(&request).unwrap();
@@ -121,5 +129,26 @@ fn test_map() {
     println!("{}", json);
 
     let result: HashMap<String, i32> = serde_json::from_str(&json).unwrap();
+    println!("{:?}", result)
+}
+
+
+// Enum
+#[test]
+fn test_enum() {
+    let request = User {
+        first_name: "Suharjin".to_string(),
+        username: "suharjin".to_string(),
+        email: "suharjin01@gmail.com".to_string(),
+        hobbies: vec!["Reading".to_string(), "swimming".to_string(), "browsing".to_string()],
+        phone: None,
+        gender: Gender::Male
+    };
+
+    let json = serde_json::to_string(&request).unwrap();
+    println!("{}", json);
+
+    // konversi balik ke data vector
+    let result: User = serde_json::from_str(&json).unwrap();
     println!("{:?}", result)
 }
