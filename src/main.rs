@@ -76,6 +76,43 @@ struct Category {
 }
 
 
+// Custom Serialize
+#[derive(Debug, Serialize)]
+struct Admin {
+    id: String,
+    name: Name,
+}
+
+#[derive(Debug)]
+struct Name {
+    first: String,
+    last: String,
+}
+
+impl Serialize for Name {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer 
+    {
+        serializer.serialize_str(format!("{} {}", self.first, self.last).as_str())
+    }
+}
+
+#[test]
+fn test_costum_serialize() {
+    let admin = Admin {
+        id: "12345".to_string(),
+        name: Name { 
+            first: "Muhammad".to_string(), 
+            last: "Aqil".to_string() 
+        }
+    };
+
+    let json = serde_json::to_string(&admin).unwrap();
+    println!("{}", json)
+}
+
+
 #[test]
 fn test_create_json_for_user_login_request() {
     let login_request = UserLoginRequest {
