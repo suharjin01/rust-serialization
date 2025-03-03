@@ -347,3 +347,21 @@ fn test_chrono() {
     let result: Category = serde_json::from_str(&json).unwrap();
     println!("{:?}", result)
 }
+
+
+// Format Data Lainnya contohnya menggunakan format "toml"
+#[test]
+fn test_data_toml() {
+    let category = Category {
+        id: "12345".to_string(),
+        name: "Aqil".to_string(),
+        created_ad: Utc::now(),
+        updated_ad: Utc::now()
+    };
+
+    let toml = toml::to_string(&category).unwrap();
+    println!("{}", toml);
+
+    let result: Category = toml::from_str(&toml).unwrap();
+    println!("{:?}", result)
+}
